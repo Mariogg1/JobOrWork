@@ -26,6 +26,17 @@ class Oferta
      */
     private $dataPub;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Empresa", inversedBy="oferta")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $empresa;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Candidat", inversedBy="oferta")
+     */
+    private $candidat;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,6 +62,30 @@ class Oferta
     public function setDataPub(\DateTimeInterface $dataPub): self
     {
         $this->dataPub = $dataPub;
+
+        return $this;
+    }
+
+    public function getEmpresa(): ?Empresa
+    {
+        return $this->empresa;
+    }
+
+    public function setEmpresa(?Empresa $empresa): self
+    {
+        $this->empresa = $empresa;
+
+        return $this;
+    }
+
+    public function getCandidat(): ?Candidat
+    {
+        return $this->candidat;
+    }
+
+    public function setCandidat(?Candidat $candidat): self
+    {
+        $this->candidat = $candidat;
 
         return $this;
     }

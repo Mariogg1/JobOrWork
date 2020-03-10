@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +32,17 @@ class Empresa
      * @ORM\Column(type="string", length=255)
      */
     private $correu;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Oferta", mappedBy="empresa", orphanRemoval=true)
+     */
+    private $oferta;
+
+
+    public function __construct()
+    {
+        $this->oferta = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -68,6 +81,37 @@ class Empresa
     public function setCorreu(string $correu): self
     {
         $this->correu = $correu;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Oferta[]
+     */
+    public function getOferta(): Collection
+    {
+        return $this->oferta;
+    }
+
+    public function addOfertum(Oferta $ofertum): self
+    {
+        if (!$this->oferta->contains($ofertum)) {
+            $this->oferta[] = $ofertum;
+            $ofertum->setEmpresa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOfertum(Oferta $ofertum): self
+    {
+        if ($this->oferta->contains($ofertum)) {
+            $this->oferta->removeElement($ofertum);
+            // set the owning side to null (unless already changed)
+            if ($ofertum->getEmpresa() === $this) {
+                $ofertum->setEmpresa(null);
+            }
+        }
 
         return $this;
     }

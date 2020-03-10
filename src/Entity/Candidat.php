@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +32,16 @@ class Candidat
      * @ORM\Column(type="integer")
      */
     private $telefon;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Oferta", mappedBy="candidat")
+     */
+    private $oferta;
+
+    public function __construct()
+    {
+        $this->oferta = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -68,6 +80,37 @@ class Candidat
     public function setTelefon(int $telefon): self
     {
         $this->telefon = $telefon;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Oferta[]
+     */
+    public function getOferta(): Collection
+    {
+        return $this->oferta;
+    }
+
+    public function addOfertum(Oferta $ofertum): self
+    {
+        if (!$this->oferta->contains($ofertum)) {
+            $this->oferta[] = $ofertum;
+            $ofertum->setCandidat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOfertum(Oferta $ofertum): self
+    {
+        if ($this->oferta->contains($ofertum)) {
+            $this->oferta->removeElement($ofertum);
+            // set the owning side to null (unless already changed)
+            if ($ofertum->getCandidat() === $this) {
+                $ofertum->setCandidat(null);
+            }
+        }
 
         return $this;
     }
